@@ -19,4 +19,14 @@ class TypeSelector extends AbstractSelector
 
         return "{$namespace}{$this->name}";
     }
+
+    public function getNamespace(): ?string
+    {
+        return $this->namespace;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 }

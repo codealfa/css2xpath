@@ -34,4 +34,24 @@ class AttributeSelector extends AbstractSelector
 
         return "[{$attrExpression}]";
     }
+
+    public function getNamespace(): ?string
+    {
+        return $this->namespace;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getOperator(): string
+    {
+        return $this->operator;
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
+    }
 }

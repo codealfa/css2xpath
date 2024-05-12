@@ -18,7 +18,7 @@ class PseudoSelector extends AbstractSelector
         return $this->selector;
     }
 
-    public function printXpath(): string
+    public function render(): string
     {
         return match ($this->selector) {
             'enabled' => "[@enabled]",
@@ -36,7 +36,8 @@ class PseudoSelector extends AbstractSelector
         };
     }
 
-    public function render(): string
+    public function getType(): string
     {
+        return $this->type;
     }
 }

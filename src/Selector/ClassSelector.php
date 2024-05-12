@@ -15,4 +15,9 @@ class ClassSelector extends AbstractSelector
     {
         return "[@class and contains(concat(' ', normalize-space(@class), ' '), ' {$this->name} ')]";
     }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 }

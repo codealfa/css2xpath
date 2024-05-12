@@ -22,17 +22,21 @@ class Css2XpathConverterTest extends TestCase
     public function converterData(): array
     {
         return [
-          ['p', 'p', 'type']
+            ['p', 'p'],
+            ['svg|href', 'svg:href'],
+            ['.container', "*[@class and contains(concat(' ', normalize-space(@class), ' '), ' container ')]"],
+            ['[href]', "*[@href]"],
+            ['[svg|href]', "*[@svg:href]"]
         ];
     }
     /**
      * @dataProvider converterData
      */
-    public function testConverter($css, $xpath, $message)
+    public function testConverter($css, $xpath): void
     {
         $prefix = 'descendant-or-self::';
         $converter = new Css2XpathConverter();
 
-        $this->assertEquals($prefix . $xpath, $converter->convert($css), $message);
+        $this->assertEquals($prefix . $xpath, $converter->convert($css));
     }
 }

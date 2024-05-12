@@ -15,4 +15,9 @@ class IdSelector extends AbstractSelector
     {
         return "[@id='{$this->name}']";
     }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 }

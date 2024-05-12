@@ -10,9 +10,9 @@ class CssSelectorList extends AbstractSelector
 {
     protected SplObjectStorage $selectors;
 
-    public function __construct(?SplObjectStorage $selectors = null)
+    public function __construct(SplObjectStorage $selectors)
     {
-        $this->selectors = $selectors ?? new SplObjectStorage();
+        $this->selectors = $selectors;
     }
 
     public function render(): string
@@ -33,7 +33,7 @@ class CssSelectorList extends AbstractSelector
         $selectorStrings = explode(',', $css);
 
         foreach ($selectorStrings as $selectorString) {
-            $selectors->attach(CssSelector::load($selectorString));
+            $selectors->attach(CssSelector::create($selectorString));
         }
 
         return new static($selectors);

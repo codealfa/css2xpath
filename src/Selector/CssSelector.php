@@ -68,7 +68,7 @@ class CssSelector extends AbstractSelector
 
         foreach ($matches as $match) {
             if (!empty($match['type'])) {
-                $type = new TypeSelector($match['type'], $match['typeNs'] ?? null);
+                $type = new TypeSelector($match['type'], $match['typeSeparator'] ? $match['typeNs'] : null);
             }
 
             if (!empty($match['id'])) {
@@ -85,7 +85,7 @@ class CssSelector extends AbstractSelector
                         $match['attrName'],
                         $match['attrValue'] ?? '',
                         $match['attrOperator'] ?? '',
-                        $match['attrNs'] ?? null,
+                        $match['attrSeparator'] ? $match['attrNs'] : null,
                     )
                 );
             }
@@ -113,7 +113,7 @@ class CssSelector extends AbstractSelector
 
     private static function cssTypeSelectorWithCaptureValueToken(): string
     {
-        return "^(?:(?<typeNs>[a-zA-Z0-9-]*+)\|)?(?<type>(?:\*|[a-zA-Z0-9-]++))";
+        return "^(?:(?<typeNs>[a-zA-Z0-9-]*+)(?<typeSeparator>\|))?(?<type>(?:\*|[a-zA-Z0-9-]++))";
     }
 
     private static function cssIdSelectorWithCaptureValueToken(): string
@@ -128,7 +128,7 @@ class CssSelector extends AbstractSelector
 
     private static function cssAttributeSelectorWithCaptureValueToken(): string
     {
-        return "\[(?:(?<attrNs>[a-zA-Z0-9-]*+)\|)?(?<attrName>[a-zA-Z0-9\\\\_-]++)"
+        return "\[(?:(?<attrNs>[a-zA-Z0-9-]*+)(?<attrSeparator>\|))?(?<attrName>[a-zA-Z0-9\\\\_-]++)"
             . "(?:\s*+(?<attrOperator>[~|$*^]?=)\s*+['\"]?(?<attrValue>[^\]'\"]++)['\"]?)?\]";
     }
 
@@ -157,7 +157,7 @@ class CssSelector extends AbstractSelector
     {
         $xpath = $this->internalRender();
 
-        return "descendant-or-self::{$xpath}[1]";
+        return "descendant-or-self::{$xpath}";
     }
 
     private function renderTypeSelector(): string
@@ -228,5 +228,40 @@ class CssSelector extends AbstractSelector
         }
 
         return '';
+    }
+
+    public function getType(): ?TypeSelector
+    {
+        return $this->type;
+    }
+
+    public function getId(): ?IdSelector
+    {
+        return $this->id;
+    }
+
+    public function getClasses(): SplObjectStorage
+    {
+        return $this->classes;
+    }
+
+    public function getAttributes(): SplObjectStorage
+    {
+        return $this->attributes;
+    }
+
+    public function getPseudoSelectors(): SplObjectStorage
+    {
+        return $this->pseudoSelectors;
+    }
+
+    public function getCombinator(): string
+    {
+        return $this->combinator;
+    }
+
+    public function getDescendant(): ?CssSelector
+    {
+        return $this->descendant;
     }
 }
