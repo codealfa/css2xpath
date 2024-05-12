@@ -1,0 +1,19 @@
+{
+  "name": "codealfa/css2xpath",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "codealfa",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+  },
+  "autoload": {
+    "psr-4": {
+      "CodeAlfa\\Css2Xpath\\": "src/"
+    }
+  }
+}
