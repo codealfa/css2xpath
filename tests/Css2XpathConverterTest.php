@@ -23,6 +23,7 @@ class Css2XpathConverterTest extends TestCase
     {
         return [
             ['p', 'p'],
+            ['ul li', 'ul/descendant::li'],
             ['svg|href', 'svg:href'],
             ['.container', "*[@class and contains(concat(' ', normalize-space(@class), ' '), ' container ')]"],
             ['[href]', "*[@href]"],

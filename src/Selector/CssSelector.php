@@ -96,7 +96,7 @@ class CssSelector extends AbstractSelector
 
             if (isset($match['combinator'])) {
                 $combinator = $match['combinator'];
-                $descendant = CssSelector::create($match['descendant']);
+                $descendant = static::create($match['descendant']);
             }
         }
 
@@ -260,7 +260,7 @@ class CssSelector extends AbstractSelector
         return $this->combinator;
     }
 
-    public function getDescendant(): ?CssSelector
+    public function getDescendant(): static|null
     {
         return $this->descendant;
     }
