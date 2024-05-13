@@ -4,23 +4,23 @@ namespace CodeAlfa\Css2Xpath\Selector;
 
 class PseudoSelector extends AbstractSelector
 {
-    protected string $type;
-    protected string $selector;
+    protected string $prefix;
+    protected string $name;
 
-    public function __construct(string $selector, string $type)
+    public function __construct(string $name, string $prefix)
     {
-        $this->selector = $selector;
-        $this->type = $type;
+        $this->name = $name;
+        $this->prefix = $prefix;
     }
 
-    public function getSelector(): string
+    public function getName(): string
     {
-        return $this->selector;
+        return $this->name;
     }
 
     public function render(): string
     {
-        return match ($this->selector) {
+        return match ($this->name) {
             'enabled' => "[@enabled]",
             'disabled' => "[@disabled]",
             'read-only' => "[@readonly]",
@@ -36,8 +36,8 @@ class PseudoSelector extends AbstractSelector
         };
     }
 
-    public function getType(): string
+    public function getPrefix(): string
     {
-        return $this->type;
+        return $this->prefix;
     }
 }
