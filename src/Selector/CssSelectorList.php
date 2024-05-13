@@ -2,6 +2,7 @@
 
 namespace CodeAlfa\Css2Xpath\Selector;
 
+use CodeAlfa\Css2Xpath\SelectorFactoryInterface;
 use SplObjectStorage;
 
 use function implode;
@@ -27,13 +28,13 @@ class CssSelectorList extends AbstractSelector
         return implode('|', $selectors);
     }
 
-    public static function create(string $css): static
+    public static function create(SelectorFactoryInterface $selectorFactory, string $css): static
     {
         $selectors = new SplObjectStorage();
         $selectorStrings = explode(',', $css);
 
         foreach ($selectorStrings as $selectorString) {
-            $selectors->attach(CssSelector::create($selectorString));
+            $selectors->attach($selectorFactory->createCssSelector($selectorFactory, $selectorString));
         }
 
         return new static($selectors);

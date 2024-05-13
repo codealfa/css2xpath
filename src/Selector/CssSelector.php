@@ -2,6 +2,7 @@
 
 namespace CodeAlfa\Css2Xpath\Selector;
 
+use CodeAlfa\Css2Xpath\SelectorFactoryInterface;
 use CodeAlfa\RegexTokenizer\Css;
 use SplObjectStorage;
 
@@ -44,7 +45,7 @@ class CssSelector extends AbstractSelector
         $this->descendant = $descendant;
     }
 
-    public static function create(string $css): static
+    public static function create(SelectorFactoryInterface $selectorFactory, string $css): static
     {
         $type = null;
         $id = null;
@@ -68,20 +69,23 @@ class CssSelector extends AbstractSelector
 
         foreach ($matches as $match) {
             if (!empty($match['type'])) {
-                $type = new TypeSelector($match['type'], $match['typeSeparator'] ? $match['typeNs'] : null);
+                $type = $selectorFactory->createTypeSelector(
+                    $match['type'],
+                    $match['typeSeparator'] ? $match['typeNs'] : null
+                );
             }
 
             if (!empty($match['id'])) {
-                $id = new IdSelector($match['id']);
+                $id = $selectorFactory->createIdSelector($match['id']);
             }
 
             if (!empty($match['class'])) {
-                $classes->attach(new ClassSelector($match['class']));
+                $classes->attach($selectorFactory->createClassSelector($match['class']));
             }
 
             if (!empty($match['attrName'])) {
                 $attributes->attach(
-                    new AttributeSelector(
+                    $selectorFactory->createAttributeSelector(
                         $match['attrName'],
                         $match['attrValue'] ?? '',
                         $match['attrOperator'] ?? '',
@@ -90,13 +94,15 @@ class CssSelector extends AbstractSelector
                 );
             }
 
-            if (!empty($match['pseudotype'])) {
-                $pseudoSelectors->attach(new PseudoSelector($match['pseudotype'], $match['pseudoselector']));
+            if (!empty($match['pseudoSelector'])) {
+                $pseudoSelectors->attach(
+                    $selectorFactory->createPseudoSelector($match['pseudoSelector'], $match['pseudoPrefix'])
+                );
             }
 
             if (isset($match['combinator'])) {
                 $combinator = $match['combinator'];
-                $descendant = static::create($match['descendant']);
+                $descendant = $selectorFactory->createCssSelector($selectorFactory, $match['descendant']);
             }
         }
 
@@ -134,7 +140,7 @@ class CssSelector extends AbstractSelector
 
     private static function cssPseudoSelectorWithCaptureValueToken(): string
     {
-        return "(?<pseudotype>::?)(?<pseudoselector>[a-zA-Z0-9-]++(?<fn>\((?>[^()]++|(?&fn))*+\))?)";
+        return "(?<pseudoPrefix>::?)(?<pseudoSelector>[a-zA-Z0-9-]++(?<fn>\((?>[^()]++|(?&fn))*+\))?)";
     }
 
     private static function cssDescendantSelectorWithCaptureValueToken(): string
