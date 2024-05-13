@@ -14,6 +14,7 @@
 namespace CodeAlfa\Css2Xpath\Tests;
 
 use CodeAlfa\Css2Xpath\Css2XpathConverter;
+use CodeAlfa\Css2Xpath\SelectorFactory;
 use PHPUnit\Framework\TestCase;
 
 include_once '../vendor/autoload.php';
@@ -36,7 +37,7 @@ class Css2XpathConverterTest extends TestCase
     public function testConverter($css, $xpath): void
     {
         $prefix = 'descendant-or-self::';
-        $converter = new Css2XpathConverter();
+        $converter = new Css2XpathConverter(new SelectorFactory());
 
         $this->assertEquals($prefix . $xpath, $converter->convert($css));
     }
