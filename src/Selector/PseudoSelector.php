@@ -6,11 +6,16 @@ class PseudoSelector extends AbstractSelector
 {
     protected string $prefix;
     protected string $name;
+    protected ?CssSelectorList $selectorList;
 
-    public function __construct(string $name, string $prefix)
-    {
+    public function __construct(
+        string $name,
+        string $prefix,
+        ?CssSelectorList $selectorList = null
+    ) {
         $this->name = $name;
         $this->prefix = $prefix;
+        $this->selectorList = $selectorList;
     }
 
     public function getName(): string
@@ -32,6 +37,12 @@ class PseudoSelector extends AbstractSelector
             'first-child' => "[not(preceding-sibling::*)]",
             'last-child' => "[not(following-sibling::*)]",
             'only-child' => "[not(preceding-sibling::*) and not(following-sibling::*)]",
+            'first-of-type' => "[1]",
+            'last-of-type' => "[last()]",
+            'only-of-type' => "[not(preceding-sibling::*[name()=name(self::node())])"
+                . " and not(following-sibling::*[name()=name(self::node())])]",
+            'not' => "[not({$this->transformNotSelectorList($this->renderSelectorList())})]",
+            'has' => "[count({$this->renderSelectorList()}) > 0]",
             default => ''
         };
     }
@@ -39,5 +50,24 @@ class PseudoSelector extends AbstractSelector
     public function getPrefix(): string
     {
         return $this->prefix;
+    }
+
+    public function getSelectorList(): ?CssSelectorList
+    {
+        return $this->selectorList;
+    }
+
+    protected function transformNotSelectorList(string $xpath): string
+    {
+        return str_replace(
+            ['descendant-or-self::*', 'descendant-or-self::'],
+            ['self::node()', ''],
+            $xpath
+        );
+    }
+
+    protected function renderSelectorList(): string
+    {
+        return (string) $this->selectorList?->render();
     }
 }

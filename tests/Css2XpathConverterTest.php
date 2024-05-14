@@ -17,7 +17,6 @@ use CodeAlfa\Css2Xpath\Css2XpathConverter;
 use CodeAlfa\Css2Xpath\SelectorFactory;
 use PHPUnit\Framework\TestCase;
 
-include_once '../vendor/autoload.php';
 class Css2XpathConverterTest extends TestCase
 {
     public function converterData(): array
@@ -25,16 +24,31 @@ class Css2XpathConverterTest extends TestCase
         return [
             ['p', 'p'],
             ['ul li', 'ul/descendant::li'],
+            ['ul > li', 'ul/child::li'],
+            [
+                'div + span.green',
+                "div/following-sibling::*[1]/self::span"
+                . "[@class and contains(concat(' ', normalize-space(@class), ' '), ' green ')]"
+            ],
+            ['#main ~ article', "*[@id='main']/following-sibling::article"],
+            ['p a', "p/descendant::a"],
             ['svg|href', 'svg:href'],
             ['.container', "*[@class and contains(concat(' ', normalize-space(@class), ' '), ' container ')]"],
             ['[href]', "*[@href]"],
-            ['[svg|href]', "*[@svg:href]"]
+            ['[svg|href]', "*[@svg:href]"],
+            ['a[width="50"]', "a[@width='50']"],
+            ['[href^=https]', "*[starts-with(@href, 'https')]"],
+            [':root:first-child', "*/ancestor::*[last()][not(preceding-sibling::*)]"],
+            ['input:checked', "input[@selected or @checked]"],
+            ['a:not([href])', "a[not(self::node()[@href])]"],
+            ['a:has([href])', "a[count(descendant-or-self::*[@href]) > 0]"]
+
         ];
     }
     /**
      * @dataProvider converterData
      */
-    public function testConverter($css, $xpath): void
+    public function testConverter(string $css, string $xpath): void
     {
         $prefix = 'descendant-or-self::';
         $converter = new Css2XpathConverter(new SelectorFactory());

@@ -48,8 +48,8 @@ class SelectorFactory implements SelectorFactoryInterface
         return new AttributeSelector($name, $value, $operator, $namespace);
     }
 
-    public function createPseudoSelector(string $name, string $prefix): PseudoSelector
+    public function createPseudoSelector(string $name, string $prefix, ?CssSelectorList $selectorList = null): PseudoSelector
     {
-        return new PseudoSelector($name, $prefix);
+        return new PseudoSelector($name, $prefix, $selectorList);
     }
 }

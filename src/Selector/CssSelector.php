@@ -96,7 +96,16 @@ class CssSelector extends AbstractSelector
 
             if (!empty($match['pseudoSelector'])) {
                 $pseudoSelectors->attach(
-                    $selectorFactory->createPseudoSelector($match['pseudoSelector'], $match['pseudoPrefix'])
+                    $selectorFactory->createPseudoSelector(
+                        $match['pseudoSelector'],
+                        $match['pseudoPrefix'],
+                        !empty($match['pseudoSelectorList'])
+                            ? $selectorFactory->createCssSelectorList(
+                                $selectorFactory,
+                                $match['pseudoSelectorList']
+                            )
+                            : null
+                    )
                 );
             }
 
@@ -140,7 +149,8 @@ class CssSelector extends AbstractSelector
 
     private static function cssPseudoSelectorWithCaptureValueToken(): string
     {
-        return "(?<pseudoPrefix>::?)(?<pseudoSelector>[a-zA-Z0-9-]++(?<fn>\((?>[^()]++|(?&fn))*+\))?)";
+        return "(?<pseudoPrefix>::?)(?<pseudoSelector>[a-zA-Z0-9-]++)"
+        . "(?<fn>\((?<pseudoSelectorList>(?>[^()]++|(?&fn))*+)\))?";
     }
 
     private static function cssDescendantSelectorWithCaptureValueToken(): string
