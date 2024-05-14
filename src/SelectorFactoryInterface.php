@@ -32,5 +32,9 @@ interface SelectorFactoryInterface
         ?string $namespace = null
     ): AttributeSelector;
 
-    public function createPseudoSelector(string $name, string $prefix, ?CssSelectorList $selectorList = null): PseudoSelector;
+    public function createPseudoSelector(
+        string $name,
+        string $prefix,
+        ?CssSelectorList $selectorList = null
+    ): PseudoSelector;
 }
