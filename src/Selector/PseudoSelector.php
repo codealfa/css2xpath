@@ -59,8 +59,8 @@ class PseudoSelector extends AbstractSelector
 
     protected function transformNotSelectorList(string $xpath): string
     {
-        return str_replace(
-            ['descendant-or-self::*', 'descendant-or-self::'],
+        return preg_replace(
+            ['#^descendant-or-self::\*#', '#^descendant-or-self::#'],
             ['self::node()', ''],
             $xpath
         );
