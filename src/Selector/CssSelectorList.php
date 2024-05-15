@@ -31,7 +31,7 @@ class CssSelectorList extends AbstractSelector
     public static function create(SelectorFactoryInterface $selectorFactory, string $css): static
     {
         $selectors = new SplObjectStorage();
-        $selectorStrings = explode(',', $css);
+        $selectorStrings = preg_split('#\s*+,\s*+#', $css);
 
         foreach ($selectorStrings as $selectorString) {
             $selectors->attach($selectorFactory->createCssSelector($selectorFactory, $selectorString));
