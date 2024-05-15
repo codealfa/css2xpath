@@ -33,9 +33,16 @@ class Css2XpathConverterTest extends TestCase
             ['#main ~ article', "*[@id='main']/following-sibling::article"],
             ['p a', "p/descendant::a"],
             ['svg|href', 'svg:href'],
-            ['.container', "*[@class and contains(concat(' ', normalize-space(@class), ' '), ' container ')]"],
+            [
+                '.jl-margin-auto-left\@m',
+                "*[@class and contains(concat(' ', normalize-space(@class), ' '), ' jl-margin-auto-left@m ')]"
+            ],
             ['[href]', "*[@href]"],
             ['[svg|href]', "*[@svg:href]"],
+            ['a[href*=.png]', "a[contains(@href, '.png')]"],
+            ["tool[section^='dev']", "tool[starts-with(@section, 'dev')]"],
+            ['[section$="ter"]', "*[substring(@section,string-length(@section)-(string-length('ter')-1))='ter']"],
+            ['[id|=jl]', "*[@id='jl' or starts-with(@id,concat('jl','-'))]"],
             ['a[width="50"]', "a[@width='50']"],
             ['[href^=https]', "*[starts-with(@href, 'https')]"],
             [':root:first-child', "*/ancestor::*[last()][not(preceding-sibling::*)]"],

@@ -27,8 +27,8 @@ class AttributeSelector extends AbstractSelector
             '|=' => "@{$attrName}='{$this->value}' or starts-with(@{$attrName},concat('{$this->value}','-'))",
             '^=' => "starts-with(@{$attrName}, '{$this->value}')",
             '$=' => "substring(@{$attrName},string-length(@{$attrName})"
-                        . "-(string-length('{$this->value}')-1)='{$this->value}'",
-            '*=' => "contains(@{$attrName}, '{$this->value}",
+                        . "-(string-length('{$this->value}')-1))='{$this->value}'",
+            '*=' => "contains(@{$attrName}, '{$this->value}')",
             default => "@{$attrName}"
         };
 
