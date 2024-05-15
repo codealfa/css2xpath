@@ -133,17 +133,23 @@ class CssSelector extends AbstractSelector
 
     private static function cssIdSelectorWithCaptureValueToken(): string
     {
-        return "\#(?<id>[a-zA-Z0-9\\\\_-]++)";
+        $e = self::escapedString();
+
+        return "\#(?<id>(?>[a-zA-Z0-9_-]++|{$e})++)";
     }
 
     private static function cssClassSelectorWithCaptureValueToken(): string
     {
-        return "\.(?<class>[a-zA-Z0-9\\\\_-]++)";
+        $e = self::escapedString();
+
+        return "\.(?<class>(?>[a-zA-Z0-9_-]++|{$e})++)";
     }
 
     private static function cssAttributeSelectorWithCaptureValueToken(): string
     {
-        return "\[(?:(?<attrNs>[a-zA-Z0-9-]*+)(?<attrSeparator>\|))?(?<attrName>[a-zA-Z0-9\\\\_-]++)"
+        $e = self::escapedString();
+
+        return "\[(?:(?<attrNs>[a-zA-Z0-9-]*+)(?<attrSeparator>\|))?(?<attrName>(?>[a-zA-Z0-9_-]++|{$e})++)"
             . "(?:\s*+(?<attrOperator>[~|$*^]?=)\s*+['\"]?(?<attrValue>[^\]'\"]++)['\"]?)?\]";
     }
 
@@ -161,12 +167,12 @@ class CssSelector extends AbstractSelector
 
     private function internalRender(): string
     {
-        return $this->renderTypeSelector()
+        return str_replace('\\', '', $this->renderTypeSelector()
             . $this->renderIdSelector()
             . $this->renderClassSelector()
             . $this->renderAttributeSelector()
             . $this->renderPseudoSelector()
-            . $this->renderDescendant();
+            . $this->renderDescendant());
     }
 
     public function render(): string
