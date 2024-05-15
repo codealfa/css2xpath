@@ -6,8 +6,8 @@ use Stringable;
 
 abstract class AbstractSelector implements SelectorInterface, Stringable
 {
-    public function __toString()
+    public function __toString(): string
     {
-        $this->render();
+        return $this->render();
     }
 }
