@@ -41,7 +41,11 @@ class Css2XpathConverterTest extends TestCase
             [':root:first-child', "*/ancestor::*[last()][not(preceding-sibling::*)]"],
             ['input:checked', "input[@selected or @checked]"],
             ['a:not([href])', "a[not(self::node()[@href])]"],
-            ['a:has([href])', "a[count(descendant-or-self::*[@href]) > 0]"]
+            ['a:has([href])', "a[count(descendant-or-self::*[@href]) > 0]"],
+            [
+                'p#main, div.container',
+                "p[@id='main']|div[@class and contains(concat(' ', normalize-space(@class), ' '), ' container ')]"
+            ],
 
         ];
     }
@@ -52,7 +56,11 @@ class Css2XpathConverterTest extends TestCase
     {
         $prefix = 'descendant-or-self::';
         $converter = new Css2XpathConverter(new SelectorFactory());
+        $xpath = implode('|', array_map(
+            fn($a) => $prefix . $a,
+            explode('|', $xpath)
+        ));
 
-        $this->assertEquals($prefix . $xpath, $converter->convert($css));
+        $this->assertEquals($xpath, $converter->convert($css));
     }
 }
