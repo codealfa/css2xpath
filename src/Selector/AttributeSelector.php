@@ -20,15 +20,17 @@ class AttributeSelector extends AbstractSelector
     public function render(): string
     {
         $attrName = $this->namespace !== null ? "{$this->namespace}:{$this->name}" : "{$this->name}";
+        $delim = $this->getDelimiter($this->value);
 
         $attrExpression = match ($this->operator) {
-            '=' => "@{$attrName}='{$this->value}'",
-            '~=' => "contains(concat(' ',normalize-space(@{$attrName}),' '),' {$this->value} ')",
-            '|=' => "@{$attrName}='{$this->value}' or starts-with(@{$attrName},concat('{$this->value}','-'))",
-            '^=' => "starts-with(@{$attrName}, '{$this->value}')",
+            '=' => "@{$attrName}={$delim}{$this->value}{$delim}",
+            '~=' => "contains(concat(\" \",normalize-space(@{$attrName}),\" \"),{$delim} {$this->value} {$delim})",
+            '|=' => "@{$attrName}={$delim}{$this->value}{$delim}"
+                        . " or starts-with(@{$attrName},concat({$delim}{$this->value}{$delim},\"-\"))",
+            '^=' => "starts-with(@{$attrName}, {$delim}{$this->value}{$delim})",
             '$=' => "substring(@{$attrName},string-length(@{$attrName})"
-                        . "-(string-length('{$this->value}')-1))='{$this->value}'",
-            '*=' => "contains(@{$attrName}, '{$this->value}')",
+                        . "-(string-length({$delim}{$this->value}{$delim})-1))={$delim}{$this->value}{$delim}",
+            '*=' => "contains(@{$attrName}, {$delim}{$this->value}{$delim})",
             default => "@{$attrName}"
         };
 

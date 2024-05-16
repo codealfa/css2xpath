@@ -27,31 +27,31 @@ class Css2XpathConverterTest extends TestCase
             ['ul > li', 'ul/child::li'],
             [
                 'div + span.green',
-                "div/following-sibling::*[1]/self::span"
-                . "[@class and contains(concat(' ', normalize-space(@class), ' '), ' green ')]"
+                'div/following-sibling::*[1]/self::span'
+                . '[@class and contains(concat(" ", normalize-space(@class), " "), " green ")]'
             ],
-            ['#main ~ article', "*[@id='main']/following-sibling::article"],
+            ['#main ~ article', '*[@id="main"]/following-sibling::article'],
             ['p a', "p/descendant::a"],
             ['svg|href', 'svg:href'],
             [
                 '.jl-margin-auto-left\@m',
-                "*[@class and contains(concat(' ', normalize-space(@class), ' '), ' jl-margin-auto-left@m ')]"
+                '*[@class and contains(concat(" ", normalize-space(@class), " "), " jl-margin-auto-left@m ")]'
             ],
             ['[href]', "*[@href]"],
             ['[svg|href]', "*[@svg:href]"],
-            ['a[href*=\.png]', "a[contains(@href, '.png')]"],
-            ["tool[section^='dev']", "tool[starts-with(@section, 'dev')]"],
-            ['[section$="ter"]', "*[substring(@section,string-length(@section)-(string-length('ter')-1))='ter']"],
-            ['[id|=jl]', "*[@id='jl' or starts-with(@id,concat('jl','-'))]"],
-            ['a[width="50"]', "a[@width='50']"],
-            ['[href^=https]', "*[starts-with(@href, 'https')]"],
+            ['a[href*=\.png]', 'a[contains(@href, ".png")]'],
+            ["tool[section^='dev']", 'tool[starts-with(@section, "dev")]'],
+            ['[section$="ter"]', '*[substring(@section,string-length(@section)-(string-length("ter")-1))="ter"]'],
+            ['[id|=jl]', '*[@id="jl" or starts-with(@id,concat("jl","-"))]'],
+            ['a[width="50"]', 'a[@width="50"]'],
+            ['[href^=https]', '*[starts-with(@href, "https")]'],
             [':root:first-child', "*/ancestor::*[last()][not(preceding-sibling::*)]"],
             ['input:checked', "input[@selected or @checked]"],
             ['a:not([href])', "a[not(self::node()[@href])]"],
             ['a:has([href])', "a[count(descendant-or-self::*[@href]) > 0]"],
             [
                 'p#main, div.container',
-                "p[@id='main']|div[@class and contains(concat(' ', normalize-space(@class), ' '), ' container ')]"
+                'p[@id="main"]|div[@class and contains(concat(" ", normalize-space(@class), " "), " container ")]'
             ],
 
         ];

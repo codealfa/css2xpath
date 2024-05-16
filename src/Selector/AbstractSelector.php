@@ -15,4 +15,9 @@ abstract class AbstractSelector implements SelectorInterface, Stringable
     {
         return preg_replace("#\\\\([^0-9a-fA-F\n])#", '\1', $identifier);
     }
+
+    protected function getDelimiter($identifier): string
+    {
+        return str_contains($identifier, '"') ? "'" : '"';
+    }
 }

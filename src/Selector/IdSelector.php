@@ -13,7 +13,9 @@ class IdSelector extends AbstractSelector
 
     public function render(): string
     {
-        return "[@id='{$this->name}']";
+        $delim = $this->getDelimiter($this->name);
+
+        return "[@id={$delim}{$this->name}{$delim}]";
     }
 
     public function getName(): string
