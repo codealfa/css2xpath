@@ -7,15 +7,18 @@ class PseudoSelector extends AbstractSelector
     protected string $prefix;
     protected string $name;
     protected ?CssSelectorList $selectorList;
+    protected string $modifier;
 
     public function __construct(
         string $name,
         string $prefix,
-        ?CssSelectorList $selectorList = null
+        ?CssSelectorList $selectorList = null,
+        string $modifier = ''
     ) {
         $this->name = $name;
         $this->prefix = $prefix;
         $this->selectorList = $selectorList;
+        $this->modifier = $modifier;
     }
 
     public function getName(): string
@@ -69,5 +72,10 @@ class PseudoSelector extends AbstractSelector
     protected function renderSelectorList(): string
     {
         return (string) $this->selectorList?->render();
+    }
+
+    public function getModifier(): string
+    {
+        return $this->modifier;
     }
 }

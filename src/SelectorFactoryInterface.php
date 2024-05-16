@@ -35,6 +35,7 @@ interface SelectorFactoryInterface
     public function createPseudoSelector(
         string $name,
         string $prefix,
-        ?CssSelectorList $selectorList = null
+        ?CssSelectorList $selectorList = null,
+        string $modifier = ''
     ): PseudoSelector;
 }

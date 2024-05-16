@@ -96,16 +96,26 @@ class CssSelector extends AbstractSelector
             }
 
             if (!empty($match['pseudoSelector'])) {
+                if (
+                    preg_match("#is|not|where|has#", $match['pseudoSelector'])
+                    && !empty($match['pseudoSelectorList'])
+                ) {
+                    $pseudoSelectorList = $selectorFactory->createCssSelectorList(
+                        $selectorFactory,
+                        $match['pseudoSelectorList']
+                    );
+                    $modifier = '';
+                } else {
+                    $pseudoSelectorList = null;
+                    $modifier = !empty($match['pseudoSelectorList']) ? $match['pseudoSelectorList'] : '';
+                }
+
                 $pseudoSelectors->attach(
                     $selectorFactory->createPseudoSelector(
                         $match['pseudoSelector'],
                         $match['pseudoPrefix'],
-                        !empty($match['pseudoSelectorList'])
-                            ? $selectorFactory->createCssSelectorList(
-                                $selectorFactory,
-                                $match['pseudoSelectorList']
-                            )
-                            : null
+                        $pseudoSelectorList,
+                        $modifier
                     )
                 );
             }
@@ -159,8 +169,8 @@ class CssSelector extends AbstractSelector
 
     private static function cssPseudoSelectorWithCaptureValueToken(): string
     {
-        return "(?<pseudoPrefix>::?)(?<pseudoSelector>[a-zA-Z0-9-]++)"
-        . "(?<fn>\((?<pseudoSelectorList>(?>[^()]++|(?&fn))*+)\))?";
+        return "(?<pseudoPrefix>::?)"
+        . "(?<pseudoSelector>[a-zA-Z0-9-]++)(?<fn>\((?<pseudoSelectorList>(?>[^()]++|(?&fn))*+)\))?";
     }
 
     private static function cssDescendantSelectorWithCaptureValueToken(): string
