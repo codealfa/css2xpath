@@ -21,6 +21,7 @@ class CssSelector extends AbstractSelector
     protected SplObjectStorage $classes;
 
     protected SplObjectStorage $attributes;
+
     protected SplObjectStorage $pseudoSelectors;
 
     protected string $combinator;
@@ -167,15 +168,14 @@ class CssSelector extends AbstractSelector
         return "\s*?(?<combinator>[ >+~|])\s*+(?<descendant>[^ >+~|].*+)";
     }
 
-
     private function internalRender(): string
     {
-        return str_replace('\\', '', $this->renderTypeSelector()
+        return $this->renderTypeSelector()
             . $this->renderIdSelector()
             . $this->renderClassSelector()
             . $this->renderAttributeSelector()
             . $this->renderPseudoSelector()
-            . $this->renderDescendant());
+            . $this->renderDescendant();
     }
 
     public function render(): string
