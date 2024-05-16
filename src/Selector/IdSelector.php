@@ -8,7 +8,7 @@ class IdSelector extends AbstractSelector
 
     public function __construct(string $name)
     {
-        $this->name = $name;
+        $this->name = $this->cssStripSlash($name);
     }
 
     public function render(): string

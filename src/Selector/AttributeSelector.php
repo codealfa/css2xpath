@@ -12,7 +12,7 @@ class AttributeSelector extends AbstractSelector
     public function __construct(string $name, string $value = '', string $operator = '', ?string $namespace = null)
     {
         $this->name = $name;
-        $this->value = $value;
+        $this->value = $this->cssStripSlash($value);
         $this->operator = $operator;
         $this->namespace = $namespace;
     }

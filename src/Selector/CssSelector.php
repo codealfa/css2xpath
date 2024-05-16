@@ -133,24 +133,27 @@ class CssSelector extends AbstractSelector
 
     private static function cssIdSelectorWithCaptureValueToken(): string
     {
-        $e = self::escapedString();
+        $e = self::cssEscapedString();
 
         return "\#(?<id>(?>[a-zA-Z0-9_-]++|{$e})++)";
     }
 
     private static function cssClassSelectorWithCaptureValueToken(): string
     {
-        $e = self::escapedString();
+        $e = self::cssEscapedString();
 
         return "\.(?<class>(?>[a-zA-Z0-9_-]++|{$e})++)";
     }
 
     private static function cssAttributeSelectorWithCaptureValueToken(): string
     {
-        $e = self::escapedString();
+        $e = self::cssEscapedString();
 
         return "\[(?:(?<attrNs>[a-zA-Z0-9-]*+)(?<attrSeparator>\|))?(?<attrName>(?>[a-zA-Z0-9_-]++|{$e})++)"
-            . "(?:\s*+(?<attrOperator>[~|$*^]?=)\s*+['\"]?(?<attrValue>[^\]'\"]++)['\"]?)?\]";
+        . "(?:\s*+(?<attrOperator>[~|$*^]?=)\s*?"
+        . "(?|\"(?<attrValue>(?>[^\\\\\"\]]++|{$e})*+)\""
+        . "|'(?<attrValue>(?>[^\\\\'\]]++|{$e})*+)'"
+        . "|(?<attrValue>(?>[^\\\\\]]++|{$e})*+)))?(?:\s++[iIsS])?\s*+\]";
     }
 
     private static function cssPseudoSelectorWithCaptureValueToken(): string

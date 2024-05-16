@@ -10,4 +10,9 @@ abstract class AbstractSelector implements SelectorInterface, Stringable
     {
         return $this->render();
     }
+
+    protected function cssStripSlash($identifier): string
+    {
+        return preg_replace("#\\\\([^0-9a-fA-F\n])#", '\1', $identifier);
+    }
 }

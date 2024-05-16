@@ -39,7 +39,7 @@ class Css2XpathConverterTest extends TestCase
             ],
             ['[href]', "*[@href]"],
             ['[svg|href]', "*[@svg:href]"],
-            ['a[href*=.png]', "a[contains(@href, '.png')]"],
+            ['a[href*=\.png]', "a[contains(@href, '.png')]"],
             ["tool[section^='dev']", "tool[starts-with(@section, 'dev')]"],
             ['[section$="ter"]', "*[substring(@section,string-length(@section)-(string-length('ter')-1))='ter']"],
             ['[id|=jl]', "*[@id='jl' or starts-with(@id,concat('jl','-'))]"],
