@@ -64,7 +64,7 @@ class CssSelector extends AbstractSelector
         $descRx = self::cssDescendantSelectorWithCaptureValueToken();
         $bc = self::blockCommentToken();
 
-        $regex = "(?:{$elRx}|{$idRx}|{$classRx}|{$attrRx}|{$pseudoRx}|{$descRx}|\s*+{$bc})";
+        $regex = "(?:{$elRx})?(?:{$idRx})?(?:{$classRx})?(?:{$attrRx})?(?:{$pseudoRx})?(?:{$descRx})?(?:\s*+{$bc})?";
 
         preg_match_all("#{$regex}#", $css, $matches, PREG_SET_ORDER);
 
