@@ -15,9 +15,9 @@ class TypeSelector extends AbstractSelector
 
     public function render(): string
     {
-        $namespace = $this->namespace !== null ? "{$this->namespace}:" : '';
+        $namespace = $this->getNamespace() !== null ? "{$this->getNamespace()}:" : '';
 
-        return "{$namespace}{$this->name}";
+        return "{$namespace}{$this->getName()}";
     }
 
     public function getNamespace(): ?string

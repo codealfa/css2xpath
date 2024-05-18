@@ -2,19 +2,28 @@
 
 namespace CodeAlfa\Css2Xpath\Selector;
 
+use CodeAlfa\Css2Xpath\SelectorFactoryInterface;
+
 class PseudoSelector extends AbstractSelector
 {
+    protected SelectorFactoryInterface $selectorFactory;
+
     protected string $prefix;
+
     protected string $name;
-    protected ?CssSelectorList $selectorList;
+
+    protected CssSelectorList|string|null $selectorList;
+
     protected string $modifier;
 
     public function __construct(
+        SelectorFactoryInterface $selectorFactory,
         string $name,
         string $prefix,
-        ?CssSelectorList $selectorList = null,
+        ?string $selectorList,
         string $modifier = ''
     ) {
+        $this->selectorFactory = $selectorFactory;
         $this->name = $name;
         $this->prefix = $prefix;
         $this->selectorList = $selectorList;
@@ -28,7 +37,7 @@ class PseudoSelector extends AbstractSelector
 
     public function render(): string
     {
-        return match ($this->name) {
+        return match ($this->getName()) {
             'enabled' => "[@enabled]",
             'disabled' => "[@disabled]",
             'read-only' => "[@readonly]",
@@ -57,6 +66,13 @@ class PseudoSelector extends AbstractSelector
 
     public function getSelectorList(): ?CssSelectorList
     {
+        if (is_string($this->selectorList)) {
+            $this->selectorList = $this->selectorFactory->createCssSelectorList(
+                $this->selectorFactory,
+                $this->selectorList
+            );
+        }
+
         return $this->selectorList;
     }
 
@@ -71,7 +87,7 @@ class PseudoSelector extends AbstractSelector
 
     protected function renderSelectorList(): string
     {
-        return (string) $this->selectorList?->render();
+        return (string)$this->getSelectorList()?->render();
     }
 
     public function getModifier(): string

@@ -6,6 +6,7 @@ use CodeAlfa\Css2Xpath\SelectorFactoryInterface;
 use CodeAlfa\RegexTokenizer\Css;
 use SplObjectStorage;
 
+use function preg_match;
 use function preg_match_all;
 
 use const PREG_SET_ORDER;
@@ -13,6 +14,8 @@ use const PREG_SET_ORDER;
 class CssSelector extends AbstractSelector
 {
     use Css;
+
+    protected SelectorFactoryInterface $selectorFactory;
 
     protected ?TypeSelector $type;
 
@@ -26,17 +29,19 @@ class CssSelector extends AbstractSelector
 
     protected string $combinator;
 
-    protected ?CssSelector $descendant;
+    protected CssSelector|string|null $descendant;
 
     public function __construct(
+        SelectorFactoryInterface $selectorFactory,
         ?TypeSelector $type = null,
         ?IdSelector $id = null,
         ?SplObjectStorage $classes = null,
         ?SplObjectStorage $attributes = null,
         ?SplObjectStorage $pseudoSelectors = null,
         string $combinator = '',
-        ?CssSelector $descendant = null
+        ?string $descendant = null
     ) {
+        $this->selectorFactory = $selectorFactory;
         $this->type = $type;
         $this->id = $id;
         $this->classes = $classes ?? new SplObjectStorage();
@@ -70,63 +75,33 @@ class CssSelector extends AbstractSelector
 
         foreach ($matches as $match) {
             if (!empty($match['type'])) {
-                $type = $selectorFactory->createTypeSelector(
-                    $match['type'],
-                    $match['typeSeparator'] ? $match['typeNs'] : null
-                );
+                $type = static::createTypeSelector($selectorFactory, $match);
             }
 
             if (!empty($match['id'])) {
-                $id = $selectorFactory->createIdSelector($match['id']);
+                $id = static::createIdSelector($selectorFactory, $match);
             }
 
             if (!empty($match['class'])) {
-                $classes->attach($selectorFactory->createClassSelector($match['class']));
+                static::addClassSelector($classes, $selectorFactory, $match);
             }
 
             if (!empty($match['attrName'])) {
-                $attributes->attach(
-                    $selectorFactory->createAttributeSelector(
-                        $match['attrName'],
-                        $match['attrValue'] ?? '',
-                        $match['attrOperator'] ?? '',
-                        $match['attrSeparator'] ? $match['attrNs'] : null,
-                    )
-                );
+                static::addAttributeSelector($attributes, $selectorFactory, $match);
             }
 
             if (!empty($match['pseudoSelector'])) {
-                if (
-                    preg_match("#is|not|where|has#", $match['pseudoSelector'])
-                    && !empty($match['pseudoSelectorList'])
-                ) {
-                    $pseudoSelectorList = $selectorFactory->createCssSelectorList(
-                        $selectorFactory,
-                        $match['pseudoSelectorList']
-                    );
-                    $modifier = '';
-                } else {
-                    $pseudoSelectorList = null;
-                    $modifier = !empty($match['pseudoSelectorList']) ? $match['pseudoSelectorList'] : '';
-                }
-
-                $pseudoSelectors->attach(
-                    $selectorFactory->createPseudoSelector(
-                        $match['pseudoSelector'],
-                        $match['pseudoPrefix'],
-                        $pseudoSelectorList,
-                        $modifier
-                    )
-                );
+                static::addPseudoSelector($pseudoSelectors, $selectorFactory, $match);
             }
 
             if (isset($match['combinator'])) {
                 $combinator = $match['combinator'];
-                $descendant = $selectorFactory->createCssSelector($selectorFactory, $match['descendant']);
+                $descendant = static::createDescendant($selectorFactory, $match);
             }
         }
 
         return new static(
+            $selectorFactory,
             $type,
             $id,
             $classes,
@@ -135,6 +110,71 @@ class CssSelector extends AbstractSelector
             $combinator,
             $descendant
         );
+    }
+
+    protected static function createTypeSelector(SelectorFactoryInterface $selectorFactory, array $match): TypeSelector
+    {
+        return $selectorFactory->createTypeSelector(
+            $match['type'],
+            $match['typeSeparator'] ? $match['typeNs'] : null
+        );
+    }
+
+    protected static function createIdSelector(SelectorFactoryInterface $selectorFactory, array $match): IdSelector
+    {
+        return $selectorFactory->createIdSelector($match['id']);
+    }
+
+    protected static function addClassSelector(
+        SplObjectStorage $classesStorage,
+        SelectorFactoryInterface $selectorFactory,
+        array $match
+    ): void {
+        $classesStorage->attach($selectorFactory->createClassSelector($match['class']));
+    }
+
+    protected static function addAttributeSelector(
+        SplObjectStorage $attributeStorage,
+        SelectorFactoryInterface $selectorFactory,
+        array $match
+    ): void {
+        $attributeStorage->attach(
+            $selectorFactory->createAttributeSelector(
+                $match['attrName'],
+                $match['attrValue'] ?? '',
+                $match['attrOperator'] ?? '',
+                $match['attrSeparator'] ? $match['attrNs'] : null
+            )
+        );
+    }
+
+    protected static function addPseudoSelector(
+        SplObjectStorage $pseudoSelectorsStorage,
+        SelectorFactoryInterface $selectorFactory,
+        array $match
+    ): void {
+        if (preg_match("#is|not|where|has#", $match['pseudoSelector']) && !empty($match['pseudoSelectorList'])) {
+            $pseudoSelectorList = $match['pseudoSelectorList'];
+            $modifier = '';
+        } else {
+            $pseudoSelectorList = null;
+            $modifier = !empty($match['pseudoSelectorList']) ? $match['pseudoSelectorList'] : '';
+        }
+
+        $pseudoSelectorsStorage->attach(
+            $selectorFactory->createPseudoSelector(
+                $selectorFactory,
+                $match['pseudoSelector'],
+                $match['pseudoPrefix'],
+                $pseudoSelectorList,
+                $modifier
+            )
+        );
+    }
+
+    protected static function createDescendant(SelectorFactoryInterface $selectorFactory, array $match): string
+    {
+        return $match['descendant'];
     }
 
     private static function cssTypeSelectorWithCaptureValueToken(): string
@@ -248,7 +288,7 @@ class CssSelector extends AbstractSelector
 
     private function renderDescendant(): string
     {
-        if ($this->descendant) {
+        if ($this->getDescendant()) {
             $axes = match ($this->combinator) {
                 '>' => 'child::',
                 '+' => 'following-sibling::*[1]/self::',
@@ -257,7 +297,7 @@ class CssSelector extends AbstractSelector
                 default => 'descendant-or-self::'
             };
 
-            $descendant = $this->descendant->internalRender();
+            $descendant = $this->getDescendant()->internalRender();
 
             return "/{$axes}{$descendant}";
         }
@@ -297,6 +337,13 @@ class CssSelector extends AbstractSelector
 
     public function getDescendant(): static|null
     {
+        if (is_string($this->descendant)) {
+            $this->descendant = $this->selectorFactory->createCssSelector(
+                $this->selectorFactory,
+                $this->descendant
+            );
+        }
+
         return $this->descendant;
     }
 }

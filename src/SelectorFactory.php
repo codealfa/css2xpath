@@ -49,11 +49,12 @@ class SelectorFactory implements SelectorFactoryInterface
     }
 
     public function createPseudoSelector(
+        SelectorFactoryInterface $selectorFactory,
         string $name,
         string $prefix,
-        ?CssSelectorList $selectorList = null,
+        ?string $selectorList = null,
         string $modifier = ''
     ): PseudoSelector {
-        return new PseudoSelector($name, $prefix, $selectorList, $modifier);
+        return new PseudoSelector($selectorFactory, $name, $prefix, $selectorList, $modifier);
     }
 }
