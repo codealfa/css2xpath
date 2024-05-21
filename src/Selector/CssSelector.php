@@ -237,8 +237,8 @@ class CssSelector extends AbstractSelector
 
     private function renderTypeSelector(): string
     {
-        if ($this->type) {
-            return $this->type->render();
+        if (($type = $this->getType()) !== null) {
+            return $type->render();
         }
 
         return "*";
@@ -246,8 +246,8 @@ class CssSelector extends AbstractSelector
 
     private function renderIdSelector(): string
     {
-        if ($this->id) {
-            return $this->id->render();
+        if (($id = $this->getid()) !== null) {
+            return $id->render();
         }
 
         return '';
@@ -257,7 +257,8 @@ class CssSelector extends AbstractSelector
     {
         $xpath = '';
 
-        foreach ($this->classes as $class) {
+        /** @var ClassSelector $class */
+        foreach ($this->getClasses() as $class) {
             $xpath .= $class->render();
         }
 
@@ -268,7 +269,8 @@ class CssSelector extends AbstractSelector
     {
         $xpath = '';
 
-        foreach ($this->attributes as $attribute) {
+        /** @var AttributeSelector $attribute */
+        foreach ($this->getAttributes() as $attribute) {
             $xpath .= $attribute->render();
         }
 
@@ -279,7 +281,8 @@ class CssSelector extends AbstractSelector
     {
         $pseudoXpath = '';
 
-        foreach ($this->pseudoSelectors as $pseudoSelector) {
+        /** @var PseudoSelector $pseudoSelector */
+        foreach ($this->getPseudoSelectors() as $pseudoSelector) {
             $pseudoXpath .= $pseudoSelector->render();
         }
 
@@ -289,7 +292,7 @@ class CssSelector extends AbstractSelector
     private function renderDescendant(): string
     {
         if (($descendant = $this->getDescendant()) instanceof CssSelector) {
-            $axes = match ($this->combinator) {
+            $axes = match ($this->getCombinator()) {
                 '>' => 'child::',
                 '+' => 'following-sibling::*[1]/self::',
                 '~' => 'following-sibling::',
