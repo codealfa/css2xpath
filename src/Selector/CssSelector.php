@@ -204,7 +204,7 @@ class CssSelector extends AbstractSelector
         . "(?:\s*+(?<attrOperator>[~|$*^]?=)\s*?"
         . "(?|\"(?<attrValue>(?>[^\\\\\"\]]++|{$e})*+)\""
         . "|'(?<attrValue>(?>[^\\\\'\]]++|{$e})*+)'"
-        . "|(?<attrValue>(?>[^\\\\\]]++|{$e})*+)))?(?:\s++[iIsS])?\s*+\]";
+        . "|(?<attrValue>(?>[^\\\\\]]++|{$e})*+)))?(?:\s++(?<attrModifier>[iIsS]))?\s*+\]";
     }
 
     private static function cssPseudoSelectorWithCaptureValueToken(): string
@@ -288,7 +288,7 @@ class CssSelector extends AbstractSelector
 
     private function renderDescendant(): string
     {
-        if ($this->getDescendant()) {
+        if (($descendant = $this->getDescendant()) instanceof CssSelector) {
             $axes = match ($this->combinator) {
                 '>' => 'child::',
                 '+' => 'following-sibling::*[1]/self::',
@@ -297,9 +297,7 @@ class CssSelector extends AbstractSelector
                 default => 'descendant-or-self::'
             };
 
-            $descendant = $this->getDescendant()->internalRender();
-
-            return "/{$axes}{$descendant}";
+            return "/{$axes}{$descendant->internalRender()}";
         }
 
         return '';
