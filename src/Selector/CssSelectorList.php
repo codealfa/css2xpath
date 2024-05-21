@@ -6,6 +6,7 @@ use CodeAlfa\Css2Xpath\SelectorFactoryInterface;
 use SplObjectStorage;
 
 use function implode;
+use function preg_split;
 
 class CssSelectorList extends AbstractSelector
 {
