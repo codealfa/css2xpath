@@ -8,6 +8,8 @@ use SplObjectStorage;
 use function implode;
 use function preg_split;
 
+use const PREG_SPLIT_NO_EMPTY;
+
 class CssSelectorList extends AbstractSelector
 {
     protected SplObjectStorage $selectors;
@@ -32,7 +34,12 @@ class CssSelectorList extends AbstractSelector
     public static function create(SelectorFactoryInterface $selectorFactory, string $css): static
     {
         $selectors = new SplObjectStorage();
-        $selectorStrings = preg_split('#\s*+,\s*+#', $css);
+        $selectorStrings = preg_split(
+            '#(?:[^,(\s]++|(?<fn>\((?>[^()]++|(?&fn))*+\))|\s++)*?\K(?:\s*+,\s*+|$)+#',
+            $css,
+            -1,
+            PREG_SPLIT_NO_EMPTY
+        );
 
         foreach ($selectorStrings as $selectorString) {
             $selectors->attach($selectorFactory->createCssSelector($selectorFactory, $selectorString));
