@@ -179,7 +179,7 @@ class CssSelector extends AbstractSelector
 
     private static function cssTypeSelectorWithCaptureValueToken(): string
     {
-        return "^(?:(?<typeNs>[a-zA-Z0-9-]*+)(?<typeSeparator>\|))?(?<type>(?:\*|[a-zA-Z0-9-]++))";
+        return "^(?:(?<typeNs>[a-zA-Z0-9-]*+)(?<typeSeparator>\|))?(?<type>(?:[*&a-zA-Z0-9-]++))";
     }
 
     private static function cssIdSelectorWithCaptureValueToken(): string

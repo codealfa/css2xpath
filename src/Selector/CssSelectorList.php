@@ -47,4 +47,9 @@ class CssSelectorList extends AbstractSelector
 
         return new static($selectors);
     }
+
+    public function getSelectors(): SplObjectStorage
+    {
+        return $this->selectors;
+    }
 }
