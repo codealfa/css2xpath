@@ -21,10 +21,19 @@ class CssSelector extends AbstractSelector
 
     protected ?IdSelector $id;
 
+    /**
+     * @var SplObjectStorage<ClassSelector, null>
+     */
     protected SplObjectStorage $classes;
 
+    /**
+     * @var SplObjectStorage<AttributeSelector, null>
+     */
     protected SplObjectStorage $attributes;
 
+    /**
+     * @var SplObjectStorage<PseudoSelector, null>
+     */
     protected SplObjectStorage $pseudoSelectors;
 
     protected string $combinator;
@@ -257,7 +266,6 @@ class CssSelector extends AbstractSelector
     {
         $xpath = '';
 
-        /** @var ClassSelector $class */
         foreach ($this->getClasses() as $class) {
             $xpath .= $class->render();
         }
@@ -269,7 +277,6 @@ class CssSelector extends AbstractSelector
     {
         $xpath = '';
 
-        /** @var AttributeSelector $attribute */
         foreach ($this->getAttributes() as $attribute) {
             $xpath .= $attribute->render();
         }
@@ -281,7 +288,6 @@ class CssSelector extends AbstractSelector
     {
         $pseudoXpath = '';
 
-        /** @var PseudoSelector $pseudoSelector */
         foreach ($this->getPseudoSelectors() as $pseudoSelector) {
             $pseudoXpath .= $pseudoSelector->render();
         }
@@ -316,16 +322,25 @@ class CssSelector extends AbstractSelector
         return $this->id;
     }
 
+    /**
+     * @return SplObjectStorage<ClassSelector, null>
+     */
     public function getClasses(): SplObjectStorage
     {
         return $this->classes;
     }
 
+    /**
+     * @return SplObjectStorage<AttributeSelector, null>
+     */
     public function getAttributes(): SplObjectStorage
     {
         return $this->attributes;
     }
 
+    /**
+     * @return SplObjectStorage<PseudoSelector, null>
+     */
     public function getPseudoSelectors(): SplObjectStorage
     {
         return $this->pseudoSelectors;

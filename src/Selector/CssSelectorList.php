@@ -12,11 +12,10 @@ use const PREG_SPLIT_NO_EMPTY;
 
 class CssSelectorList extends AbstractSelector
 {
-    protected SplObjectStorage $selectors;
-
-    public function __construct(SplObjectStorage $selectors)
-    {
-        $this->selectors = $selectors;
+    public function __construct(
+        /** @var SplObjectStorage<CssSelector, null> */
+        protected SplObjectStorage $selectors
+    ) {
     }
 
     public function render(): string
@@ -33,6 +32,7 @@ class CssSelectorList extends AbstractSelector
 
     public static function create(SelectorFactoryInterface $selectorFactory, string $css): static
     {
+        /** @var SplObjectStorage<CssSelector, null> $selectors */
         $selectors = new SplObjectStorage();
         $selectorStrings = preg_split(
             '#(?:[^,(\s]++|(?<fn>\((?>[^()]++|(?&fn))*+\))|\s++)*?\K(?:\s*+,\s*+|$)+#',
@@ -48,6 +48,9 @@ class CssSelectorList extends AbstractSelector
         return new static($selectors);
     }
 
+    /**
+     * @return SplObjectStorage<CssSelector, null>
+     */
     public function getSelectors(): SplObjectStorage
     {
         return $this->selectors;
