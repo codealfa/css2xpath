@@ -40,7 +40,7 @@ class CssSelector extends AbstractSelector
 
     protected CssSelector|string|null $descendant;
 
-    public function __construct(
+    final public function __construct(
         SelectorFactoryInterface $selectorFactory,
         ?TypeSelector $type = null,
         ?IdSelector $id = null,

@@ -12,7 +12,7 @@ use const PREG_SPLIT_NO_EMPTY;
 
 class CssSelectorList extends AbstractSelector
 {
-    public function __construct(
+    final public function __construct(
         /** @var SplObjectStorage<CssSelector, null> */
         protected SplObjectStorage $selectors
     ) {
