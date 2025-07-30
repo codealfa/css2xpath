@@ -351,7 +351,7 @@ class CssSelector extends AbstractSelector
         return $this->combinator;
     }
 
-    public function getDescendant(): static|null
+    public function getDescendant(): CssSelector|null
     {
         if (is_string($this->descendant)) {
             $this->descendant = $this->selectorFactory->createCssSelector(
