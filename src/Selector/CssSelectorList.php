@@ -2,8 +2,8 @@
 
 namespace CodeAlfa\Css2Xpath\Selector;
 
+use CodeAlfa\Css2Xpath\Collections\CssSelectorCollection;
 use CodeAlfa\Css2Xpath\SelectorFactoryInterface;
-use SplObjectStorage;
 
 use function implode;
 use function preg_split;
@@ -12,17 +12,14 @@ use const PREG_SPLIT_NO_EMPTY;
 
 class CssSelectorList extends AbstractSelector
 {
-    final public function __construct(
-        /** @var SplObjectStorage<CssSelector, null> */
-        protected SplObjectStorage $selectors
-    ) {
+    final public function __construct(protected CssSelectorCollection $selectors)
+    {
     }
 
     public function render(): string
     {
         $selectors = [];
 
-        /** @var CssSelector $selector */
         foreach ($this->selectors as $selector) {
             $selectors[] = $selector->render();
         }
@@ -32,8 +29,7 @@ class CssSelectorList extends AbstractSelector
 
     public static function create(SelectorFactoryInterface $selectorFactory, string $css): static
     {
-        /** @var SplObjectStorage<CssSelector, null> $selectors */
-        $selectors = new SplObjectStorage();
+        $selectors = new CssSelectorCollection();
         $selectorStrings = preg_split(
             '#(?:[^,(\s]++|(?<fn>\((?>[^()]++|(?&fn))*+\))|\s++)*?\K(?:\s*+,\s*+|$)+#',
             $css,
@@ -48,10 +44,7 @@ class CssSelectorList extends AbstractSelector
         return new static($selectors);
     }
 
-    /**
-     * @return SplObjectStorage<CssSelector, null>
-     */
-    public function getSelectors(): SplObjectStorage
+    public function getSelectors(): CssSelectorCollection
     {
         return $this->selectors;
     }

@@ -4,9 +4,7 @@ namespace CodeAlfa\Css2Xpath\Selector;
 
 class IdSelector extends AbstractSelector
 {
-    protected string $name;
-
-    public function __construct(string $name)
+    public function __construct(protected string $name)
     {
         $this->name = $this->cssStripSlash($name);
     }

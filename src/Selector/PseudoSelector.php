@@ -4,30 +4,16 @@ namespace CodeAlfa\Css2Xpath\Selector;
 
 use CodeAlfa\Css2Xpath\SelectorFactoryInterface;
 
-class PseudoSelector extends AbstractSelector
+abstract class PseudoSelector extends AbstractSelector
 {
-    protected SelectorFactoryInterface $selectorFactory;
-
     protected string $prefix;
 
-    protected string $name;
-
-    protected CssSelectorList|string|null $selectorList;
-
-    protected string $modifier;
-
     public function __construct(
-        SelectorFactoryInterface $selectorFactory,
-        string $name,
-        string $prefix,
-        ?string $selectorList,
-        string $modifier = ''
+        protected SelectorFactoryInterface $selectorFactory,
+        protected string $name,
+        protected CssSelectorList|string|null $selectorList = null,
+        protected string $modifier = ''
     ) {
-        $this->selectorFactory = $selectorFactory;
-        $this->name = $name;
-        $this->prefix = $prefix;
-        $this->selectorList = $selectorList;
-        $this->modifier = $modifier;
     }
 
     public function getName(): string

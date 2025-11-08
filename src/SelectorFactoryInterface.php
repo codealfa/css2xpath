@@ -7,7 +7,8 @@ use CodeAlfa\Css2Xpath\Selector\ClassSelector;
 use CodeAlfa\Css2Xpath\Selector\CssSelector;
 use CodeAlfa\Css2Xpath\Selector\CssSelectorList;
 use CodeAlfa\Css2Xpath\Selector\IdSelector;
-use CodeAlfa\Css2Xpath\Selector\PseudoSelector;
+use CodeAlfa\Css2Xpath\Selector\PseudoClassSelector;
+use CodeAlfa\Css2Xpath\Selector\PseudoElementSelector;
 use CodeAlfa\Css2Xpath\Selector\TypeSelector;
 
 interface SelectorFactoryInterface
@@ -32,11 +33,15 @@ interface SelectorFactoryInterface
         ?string $namespace = null
     ): AttributeSelector;
 
-    public function createPseudoSelector(
+    public function createPseudoClassSelector(
         SelectorFactoryInterface $selectorFactory,
         string $name,
-        string $prefix,
         ?string $selectorList = null,
         string $modifier = ''
-    ): PseudoSelector;
+    ): PseudoClassSelector;
+
+    public function createPseudoElementSelector(
+        SelectorFactoryInterface $selectorFactory,
+        string $name,
+    ): PseudoElementSelector;
 }
