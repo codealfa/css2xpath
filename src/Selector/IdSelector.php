@@ -13,7 +13,7 @@ class IdSelector extends AbstractSelector
     {
         $delim = $this->getDelimiter($this->getName());
 
-        return "[@id={$delim}{$this->getName()}{$delim}]";
+        return "@id={$delim}{$this->getName()}{$delim}";
     }
 
     public function getName(): string

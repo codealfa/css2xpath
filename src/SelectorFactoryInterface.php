@@ -37,7 +37,8 @@ interface SelectorFactoryInterface
         SelectorFactoryInterface $selectorFactory,
         string $name,
         ?string $selectorList = null,
-        string $modifier = ''
+        string $modifier = '',
+        ?string $elementName = null
     ): PseudoClassSelector;
 
     public function createPseudoElementSelector(

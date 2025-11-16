@@ -53,9 +53,10 @@ class SelectorFactory implements SelectorFactoryInterface
         SelectorFactoryInterface $selectorFactory,
         string $name,
         ?string $selectorList = null,
-        string $modifier = ''
+        string $modifier = '',
+        ?string $elementName = null
     ): PseudoClassSelector {
-        return new PseudoClassSelector($selectorFactory, $name, $selectorList, $modifier);
+        return new PseudoClassSelector($selectorFactory, $name, $selectorList, $modifier, $elementName);
     }
 
     public function createPseudoElementSelector(

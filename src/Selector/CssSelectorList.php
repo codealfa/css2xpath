@@ -16,12 +16,12 @@ class CssSelectorList extends AbstractSelector
     {
     }
 
-    public function render(): string
+    public function render(?string $axis = null): string
     {
         $selectors = [];
 
         foreach ($this->selectors as $selector) {
-            $selectors[] = $selector->render();
+            $selectors[] = $selector->render($axis);
         }
 
         return implode('|', $selectors);

@@ -71,7 +71,7 @@ class CssSelector extends AbstractSelector
             }
 
             if (!empty($match['pseudoSelector'])) {
-                static::addPseudoSelector($pseudoClassCollection, $pseudoElement, $selectorFactory, $match);
+                static::addPseudoSelector($pseudoClassCollection, $pseudoElement, $type, $selectorFactory, $match);
             }
 
             if (isset($match['combinator'])) {
@@ -132,12 +132,13 @@ class CssSelector extends AbstractSelector
     protected static function addPseudoSelector(
         PseudoClassCollection $pseudoClassCollection,
         ?PseudoElementSelector &$pseudoElementSelector,
+        ?TypeSelector $type,
         SelectorFactoryInterface $selectorFactory,
         array $match
     ): void {
         $prefix = $match['pseudoPrefix'];
         $selector = $match['pseudoSelector'];
-        $selectorList = $match['pseudoSelectorList'];
+        $selectorList = $match['pseudoSelectorList'] ?? '';
 
         if ($prefix === '::' || in_array($selector, ['before', 'after', 'first-line', 'first-letter'])) {
             $pseudoElementSelector = $selectorFactory->createPseudoElementSelector($selectorFactory, $selector);
@@ -154,7 +155,8 @@ class CssSelector extends AbstractSelector
                     $selectorFactory,
                     $selector,
                     $pseudoSelectorList,
-                    $modifier
+                    $modifier,
+                    $type?->getName()
                 )
             );
         }
@@ -208,70 +210,77 @@ class CssSelector extends AbstractSelector
 
     private function internalRender(): string
     {
-        return $this->renderTypeSelector()
-            . $this->renderIdSelector()
-            . $this->renderClassSelector()
-            . $this->renderAttributeSelector()
-            . $this->renderPseudoClassSelector()
-            . $this->renderDescendant();
+        $node = $this->renderTypeSelector();
+
+        $filters = [];
+        $filters = $this->renderIdSelector($filters);
+        $filters = $this->renderClassSelector($filters);
+        $filters = $this->renderAttributeSelector($filters);
+        $filters = $this->renderPseudoClassSelector($filters);
+
+        $predicate = $this->renderPredicateFromFilters($filters);
+
+        return "{$node}{$predicate}{$this->renderDescendant()}";
     }
 
-    public function render(): string
+    private function renderPredicateFromFilters(array $filters)
+    {
+        if (count($filters) > 1) {
+            $filters = array_map(fn($f) => preg_match('#\bor\b|[=<>]#i', $f) ? "($f)" : $f, $filters);
+        }
+
+        return !(empty($filters)) ? '[' . implode(' and ', $filters) . ']' : '';
+    }
+
+    public function render(?string $axis = null): string
     {
         $xpath = $this->internalRender();
+        $axis = $axis ?? 'descendant-or-self';
 
-        return "descendant-or-self::{$xpath}";
+        return "$axis::{$xpath}";
     }
 
     private function renderTypeSelector(): string
     {
-        if (($type = $this->getType()) !== null) {
-            return $type->render();
-        }
-
-        return "*";
+        return ($type = $this->getType()) !== null ? $type->render() : '*';
     }
 
-    private function renderIdSelector(): string
+    private function renderIdSelector(array $filters): array
     {
         if (($id = $this->getid()) !== null) {
-            return $id->render();
+            $filters[] = $id->render();
         }
 
-        return '';
+        return $filters;
     }
 
-    private function renderClassSelector(): string
+    private function renderClassSelector(array $filters): array
     {
-        $xpath = '';
-
         foreach ($this->getClasses() as $class) {
-            $xpath .= $class->render();
+            $filters[] = $class->render();
         }
 
-        return $xpath;
+        return $filters;
     }
 
-    private function renderAttributeSelector(): string
+    private function renderAttributeSelector(array $filters): array
     {
-        $xpath = '';
-
         foreach ($this->getAttributes() as $attribute) {
-            $xpath .= $attribute->render();
+            $filters[] = $attribute->render();
         }
 
-        return $xpath;
+        return $filters;
     }
 
-    private function renderPseudoClassSelector(): string
+    private function renderPseudoClassSelector(array $filters): array
     {
-        $pseudoXpath = '';
-
         foreach ($this->getPseudoClasses() as $pseudoClass) {
-            $pseudoXpath .= $pseudoClass->render();
+            if (($pseudoSelector = $pseudoClass->render())) {
+                $filters[] = $pseudoSelector;
+            }
         }
 
-        return $pseudoXpath;
+        return $filters;
     }
 
     private function renderDescendant(): string

@@ -13,8 +13,8 @@ class ClassSelector extends AbstractSelector
     {
         $delimiter = $this->getDelimiter($this->getName());
 
-        return "[@class and contains(concat(\" \", normalize-space(@class), \" \"), "
-            . "{$delimiter} {$this->getName()} {$delimiter})]";
+        return "@class and contains(concat(\" \", normalize-space(@class), \" \"), "
+            . "{$delimiter} {$this->getName()} {$delimiter})";
     }
 
     public function getName(): string

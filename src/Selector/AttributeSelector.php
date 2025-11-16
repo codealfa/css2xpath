@@ -31,7 +31,7 @@ class AttributeSelector extends AbstractSelector
             default => "@{$attrName}"
         };
 
-        return "[{$attrExpression}]";
+        return "{$attrExpression}";
     }
 
     public function getNamespace(): ?string

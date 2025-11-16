@@ -22,7 +22,7 @@ class PseudoClassCollection extends SplObjectStorage
     public function attach(object $object, mixed $info = null): void
     {
         if (!($object instanceof PseudoClassSelector)) {
-            throw new InvalidArgumentException('Only ClassSelector instances can be attached.');
+            throw new InvalidArgumentException('Only PsuedoClassSelector instances can be attached.');
         }
         parent::attach($object, $info);
     }
