@@ -11,7 +11,7 @@
   ],
   "require": {
     "php": ">=8.0",
-    "codealfa/regextokenizer": "^2.0"
+    "codealfa/regextokenizer": "dev-development"
   },
   "autoload": {
     "psr-4": {
