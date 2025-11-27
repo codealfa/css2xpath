@@ -38,7 +38,7 @@ class CssSelectorList extends AbstractSelector
         );
 
         foreach ($selectorStrings as $selectorString) {
-            $selectors->attach($selectorFactory->createCssSelector($selectorFactory, $selectorString));
+            $selectors->offsetSet($selectorFactory->createCssSelector($selectorFactory, $selectorString));
         }
 
         return new static($selectors);

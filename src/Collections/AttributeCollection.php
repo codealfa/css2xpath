@@ -19,16 +19,24 @@ use SplObjectStorage;
 
 class AttributeCollection extends SplObjectStorage
 {
-    public function attach(object $object, mixed $info = null): void
+    public function offsetSet(mixed $object, mixed $info = null): void
     {
         if (!($object instanceof AttributeSelector)) {
             throw new InvalidArgumentException('Only ClassSelector instances can be attached.');
         }
-        parent::attach($object, $info);
+        parent::offsetSet($object, $info);
     }
 
     public function current(): AttributeSelector
     {
         return parent::current();
+    }
+
+    /**
+     * @deprecated
+     */
+    public function attach(object $object, mixed $info = null): void
+    {
+        $this->offsetSet($object, $info);
     }
 }

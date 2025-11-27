@@ -19,16 +19,24 @@ use SplObjectStorage;
 
 class PseudoClassCollection extends SplObjectStorage
 {
-    public function attach(object $object, mixed $info = null): void
+    public function offsetSet(mixed $object, mixed $info = null): void
     {
         if (!($object instanceof PseudoClassSelector)) {
             throw new InvalidArgumentException('Only PsuedoClassSelector instances can be attached.');
         }
-        parent::attach($object, $info);
+        parent::offsetSet($object, $info);
     }
 
     public function current(): PseudoClassSelector
     {
         return parent::current();
+    }
+
+    /**
+     * @deprecated
+     */
+    public function attach(object $object, mixed $info = null): void
+    {
+        $this->offsetSet($object, $info);
     }
 }
