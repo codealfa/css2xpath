@@ -223,7 +223,7 @@ class CssSelector extends AbstractSelector
         return "{$node}{$predicate}{$this->renderDescendant()}";
     }
 
-    private function renderPredicateFromFilters(array $filters)
+    private function renderPredicateFromFilters(array $filters): string
     {
         if (count($filters) > 1) {
             $filters = array_map(fn($f) => preg_match('#\bor\b|[=<>]#i', $f) ? "($f)" : $f, $filters);
