@@ -219,6 +219,13 @@ class Css2XpathConverterTest extends TestCase
                 . ']'
                 . ']'
             ],
+            [
+                '.uk-navbar-center:not(:only-child) ',
+                'descendant-or-self::*['
+                . '@class and contains(concat(" ", normalize-space(@class), " "), " uk-navbar-center ")'
+                . ' and not(self::*[not(preceding-sibling::*) and not(following-sibling::*)])'
+                . ']'
+            ]
         ];
     }
 
