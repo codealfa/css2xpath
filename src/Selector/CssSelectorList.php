@@ -32,7 +32,7 @@ class CssSelectorList extends AbstractSelector
         $selectors = new CssSelectorCollection();
         $selectorStrings = preg_split(
             '#(?:[^,(\s]++|(?<fn>\((?>[^()]++|(?&fn))*+\))|\s++)*?\K(?:\s*+,\s*+|$)+#',
-            $css,
+            trim($css),
             -1,
             PREG_SPLIT_NO_EMPTY
         );
