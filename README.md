@@ -18,14 +18,14 @@ var_dump($xPath);
 ```
 Output:
 ```
-p[@id="main"]|div[@class and contains(concat(" ", normalize-space(@class), " "), " container ")]
+descendant-or-self::p[@id="main"]|descendant-or-self::div[@class and contains(concat(" ", normalize-space(@class), " "), " container ")]
 ```
 
 ## Notes
 * The Selector classes are extendable if you need to add or change functionality. You'll just need to create your own 
   `SelectorFactory` or extend the existing one to inject into the `Css2XpathConverter` class.
-* Some CSS pseudo-selectors only make sense in the context of a web browser, so only the following pseudo-selectors are
-  implemented. All others are ignored:
+* Some CSS pseudo-selectors only make sense in the context of a web browser. The following pseudo-classes are
+  supported:
   * :enabled
   * :disabled
   * :read-only
@@ -40,8 +40,17 @@ p[@id="main"]|div[@class and contains(concat(" ", normalize-space(@class), " "),
   * :first-of-type
   * :last-of-type
   * :only-of-type
+  * :nth-child()
+  * :nth-last-child()
+  * :nth-of-type()
+  * :nth-last-of-type()
   * :not
   * :has
+  * :is
+  * :where
+
+  Unsupported pseudo-classes are ignored. CSS pseudo-elements such as `::before`, `::after`, `::first-line`, and
+  `::first-letter` are recognized but do not add a node to the XPath result.
 
 ## License
 GPL-3.0 or later
