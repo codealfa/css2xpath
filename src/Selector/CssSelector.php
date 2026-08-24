@@ -124,7 +124,7 @@ class CssSelector extends AbstractSelector
         SelectorFactoryInterface $selectorFactory,
         array $match
     ): void {
-        $classCollection->offsetSet($selectorFactory->createClassSelector($match['class']));
+        $classCollection->add($selectorFactory->createClassSelector($match['class']));
     }
 
     protected static function addAttributeSelector(
@@ -132,7 +132,7 @@ class CssSelector extends AbstractSelector
         SelectorFactoryInterface $selectorFactory,
         array $match
     ): void {
-        $attributeStorage->offsetSet(
+        $attributeStorage->add(
             $selectorFactory->createAttributeSelector(
                 $match['attrName'],
                 $match['attrValue'] ?? '',
@@ -163,7 +163,7 @@ class CssSelector extends AbstractSelector
                 $pseudoSelectorList = null;
                 $modifier = !empty($selectorList) ? $selectorList : '';
             }
-            $pseudoClassCollection->offsetSet(
+            $pseudoClassCollection->add(
                 $selectorFactory->createPseudoClassSelector(
                     $selectorFactory,
                     $selector,

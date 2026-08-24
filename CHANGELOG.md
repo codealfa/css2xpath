@@ -2,6 +2,29 @@
 
 All notable changes to this project are documented here.
 
+## [3.0.0] - 2026-08-24
+
+### Added
+
+- Added strict typing and standardized file headers throughout the source and test suite.
+- Added typed collection APIs with `add()`, `count()`, and iterable selector values.
+- Added regression coverage for collection identity and iteration behavior.
+
+### Changed
+
+- Requires PHP 8.2 or newer.
+- Updated the `codealfa/regextokenizer` dependency to the stable `^3.0` release.
+- Replaced public `SplObjectStorage` inheritance with composition using private object storage.
+- Removed the deprecated `attach()` collection API and storage metadata operations.
+- Updated collection iteration annotations to preserve selector type inference in `foreach` loops.
+- Updated license headers and package metadata to `codealfa\\css2xpath`.
+
+### Upgrade notes
+
+This is a breaking release. Code using `offsetSet()`, `attach()`, `detach()`, `contains()`, or storage metadata methods on the selector collections must migrate to the typed `add()` API and iterable collection interface.
+
+Downstream consumers such as `core` must update collection cloning calls from `offsetSet()` to `add()`. They must also raise their PHP requirement to 8.2 before adopting this release because of the `regextokenizer 3.0` dependency.
+
 ## [2.0.0] - 2026-08-22
 
 ### Added
@@ -33,5 +56,6 @@ Version 2.0 changes the generated XPath format and several public selector APIs.
 
 - Initial stable release.
 
+[3.0.0]: https://github.com/codealfa/css2xpath/releases/tag/3.0.0
 [2.0.0]: https://github.com/codealfa/css2xpath/releases/tag/2.0
 [1.0.0]: https://github.com/codealfa/css2xpath/releases/tag/1.0

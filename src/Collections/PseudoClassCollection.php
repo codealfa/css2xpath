@@ -16,29 +16,38 @@ declare(strict_types=1);
 namespace CodeAlfa\Css2Xpath\Collections;
 
 use CodeAlfa\Css2Xpath\Selector\PseudoClassSelector;
-use InvalidArgumentException;
+use Countable;
+use IteratorAggregate;
 use SplObjectStorage;
+use Traversable;
 
-class PseudoClassCollection extends SplObjectStorage
+/**
+ * @implements IteratorAggregate<int, PseudoClassSelector>
+ */
+final class PseudoClassCollection implements Countable, IteratorAggregate
 {
-    public function offsetSet(mixed $object, mixed $info = null): void
+    private SplObjectStorage $storage;
+
+    public function __construct()
     {
-        if (!($object instanceof PseudoClassSelector)) {
-            throw new InvalidArgumentException('Only PsuedoClassSelector instances can be attached.');
-        }
-        parent::offsetSet($object, $info);
+        $this->storage = new SplObjectStorage();
     }
 
-    public function current(): PseudoClassSelector
+    public function add(PseudoClassSelector $selector): void
     {
-        return parent::current();
+        $this->storage[$selector] = null;
+    }
+
+    public function count(): int
+    {
+        return $this->storage->count();
     }
 
     /**
-     * @deprecated
+     * @return Traversable<int, PseudoClassSelector>
      */
-    public function attach(object $object, mixed $info = null): void
+    public function getIterator(): Traversable
     {
-        $this->offsetSet($object, $info);
+        return $this->storage;
     }
 }
