@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "php": ">=8.2",
+    "php": ">=8.1",
     "codealfa/regextokenizer": "^3.0"
   },
   "autoload": {

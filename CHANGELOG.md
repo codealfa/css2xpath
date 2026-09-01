@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [3.0.1] - 2026-09-01
+
+### Changed
+
+- Lowered the minimum supported PHP version to 8.1; no PHP 8.2-specific production syntax is required.
+
 ## [3.0.0] - 2026-08-24
 
 ### Added
@@ -57,5 +63,6 @@ Version 2.0 changes the generated XPath format and several public selector APIs.
 - Initial stable release.
 
 [3.0.0]: https://github.com/codealfa/css2xpath/releases/tag/3.0.0
+[3.0.1]: https://github.com/codealfa/css2xpath/releases/tag/3.0.1
 [2.0.0]: https://github.com/codealfa/css2xpath/releases/tag/2.0
 [1.0.0]: https://github.com/codealfa/css2xpath/releases/tag/1.0
